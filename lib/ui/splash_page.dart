@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage> {
           Container(
             width: double.infinity,
             child: Image.asset(
-              'assets/icon_launch.png',
+              'assets/icons/icon_app.png',
               fit: BoxFit.cover,
             ),
           ),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:simajalengka_app/common/result_state.dart';
 import 'package:simajalengka_app/data/api/api_article.dart';
 import 'package:simajalengka_app/data/model/article.dart';
-
-enum ResultState { Loading, NoData, HasData, Error }
 
 class ArticleProvider extends ChangeNotifier {
   final ApiArticle apiArticle;

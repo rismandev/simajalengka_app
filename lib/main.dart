@@ -1,10 +1,19 @@
 import 'dart:io';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simajalengka_app/common/navigation.dart';
-import 'package:simajalengka_app/common/styles.dart';
+import 'package:simajalengka_app/data/api/api_article.dart';
+import 'package:simajalengka_app/data/db/database_helper.dart';
+import 'package:simajalengka_app/data/preferences/preferences_helper.dart';
+import 'package:simajalengka_app/data/provider/article_provider.dart';
+import 'package:simajalengka_app/data/provider/database_provider.dart';
+import 'package:simajalengka_app/data/provider/preferences_provider.dart';
+import 'package:simajalengka_app/data/provider/scheduling_provider.dart';
 import 'package:simajalengka_app/ui/article/index.dart';
 import 'package:simajalengka_app/ui/main_page.dart';
 import 'package:simajalengka_app/ui/splash_page.dart';
@@ -29,57 +38,62 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Simajalengka',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: primaryColor,
-        accentColor: secondaryColor,
-        primaryColorLight: primaryColorLight,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: customTextTheme,
-        appBarTheme: AppBarTheme(
-          textTheme: customTextTheme.apply(bodyColor: Colors.white),
-          elevation: 0,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ArticleProvider(apiArticle: ApiArticle()),
         ),
-        buttonTheme: ButtonThemeData(
-          buttonColor: primaryColor,
-          textTheme: ButtonTextTheme.accent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+        ChangeNotifierProvider(create: (_) => SchedulingProvider()),
+        ChangeNotifierProvider(
+          create: (_) => PreferencesProvider(
+            preferencesHelper: PreferencesHelper(
+              sharedPreferences: SharedPreferences.getInstance(),
+            ),
           ),
         ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          selectedItemColor: primaryColor,
-          selectedLabelStyle: Theme.of(context)
-              .textTheme
-              .caption
-              .copyWith(fontWeight: FontWeight.w600),
-          unselectedItemColor: Colors.grey,
-          unselectedLabelStyle: Theme.of(context)
-              .textTheme
-              .caption
-              .copyWith(fontWeight: FontWeight.w600),
-        ),
+        ChangeNotifierProvider(
+          create: (_) => DatabaseProvider(
+            databaseHelper: DataBaseHelper(),
+          ),
+        )
+      ],
+      child: Consumer<PreferencesProvider>(
+        builder: (context, provider, child) {
+          return MaterialApp(
+            title: 'Simajalengka',
+            debugShowCheckedModeBanner: false,
+            theme: provider.themeData,
+            builder: (context, child) {
+              return CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness:
+                      provider.isDarkTheme ? Brightness.dark : Brightness.light,
+                ),
+                child: Material(
+                  child: child,
+                ),
+              );
+            },
+            initialRoute: SplashPage.routeName,
+            navigatorKey: navigatorKey,
+            routes: {
+              SplashPage.routeName: (context) => SplashPage(),
+              MainPage.routeName: (context) => MainPage(),
+              ArticleListPage.routeName: (context) => ArticleListPage(),
+              ArticleDetailPage.routeName: (context) {
+                return ArticleDetailPage(
+                  article: ModalRoute.of(context).settings.arguments,
+                );
+              },
+              ArticleWebView.routeName: (context) {
+                return ArticleWebView(
+                  url: ModalRoute.of(context).settings.arguments,
+                );
+              },
+            },
+          );
+        },
       ),
-      initialRoute: SplashPage.routeName,
-      navigatorKey: navigatorKey,
-      routes: {
-        SplashPage.routeName: (context) => SplashPage(),
-        MainPage.routeName: (context) => MainPage(),
-        ArticleListPage.routeName: (context) => ArticleListPage(),
-        ArticleDetailPage.routeName: (context) {
-          return ArticleDetailPage(
-            article: ModalRoute.of(context).settings.arguments,
-          );
-        },
-        ArticleWebView.routeName: (context) {
-          return ArticleWebView(
-            url: ModalRoute.of(context).settings.arguments,
-          );
-        },
-      },
     );
   }
 }

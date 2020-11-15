@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:simajalengka_app/common/function.dart';
 import 'package:simajalengka_app/common/result_state.dart';
-import 'package:simajalengka_app/data/model/article.dart';
-import 'package:simajalengka_app/data/provider/article_provider.dart';
+import 'package:simajalengka_app/data/provider/database_provider.dart';
 import 'package:simajalengka_app/widgets/article_card.dart';
 import 'package:simajalengka_app/widgets/custom_platform.dart';
 
-class ArticleListPage extends StatelessWidget {
-  static String routeName = 'article_list';
-
+class BookmarkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformWidget(
@@ -23,7 +21,7 @@ class ArticleListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Simajalengka',
+          'Berita tersimpan',
           style: Theme.of(context)
               .textTheme
               .headline6
@@ -43,7 +41,7 @@ class ArticleListPage extends StatelessWidget {
           ),
         ],
       ),
-      body: _buildList(context),
+      body: _buildList(),
     );
   }
 
@@ -51,51 +49,39 @@ class ArticleListPage extends StatelessWidget {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text(
-          'Simajalengka',
+          'Berita tersimpan',
           style: Theme.of(context)
               .textTheme
               .headline6
               .copyWith(color: Colors.white, fontWeight: FontWeight.w700),
         ),
-        transitionBetweenRoutes: false,
       ),
-      child: _buildList(context),
+      child: _buildList(),
     );
   }
 
-  Widget _buildList(BuildContext context) {
-    return Consumer<ArticleProvider>(
-      builder: (context, ArticleProvider model, _) {
-        if (model.state == ResultState.Loading) {
-          return Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor,
-            ),
-          );
-        } else if (model.state == ResultState.HasData) {
-          List<Article> _articles = model.result.articles;
+  Widget _buildList() {
+    return Consumer<DatabaseProvider>(
+      builder: (context, provider, child) {
+        if (provider.state == ResultState.HasData) {
           return ListView.builder(
-            itemCount: _articles.length,
+            itemCount: provider.bookmarks.length,
             padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
             itemBuilder: (context, index) {
-              return ArticleCard(article: _articles[index]);
+              return ArticleCard(article: provider.bookmarks[index]);
             },
           );
-        } else if (model.state == ResultState.Error ||
-            model.state == ResultState.NoData) {
+        } else {
           return Container(
             alignment: Alignment.center,
             child: Text(
-              model.message,
+              provider.message,
               style: Theme.of(context)
                   .textTheme
                   .caption
                   .copyWith(color: Colors.red, fontWeight: FontWeight.w600),
             ),
           );
-        } else {
-          return Text("");
         }
       },
     );

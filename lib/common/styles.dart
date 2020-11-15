@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 final Color primaryColor = Color(0xFF002062);
 final Color secondaryColor = Color(0xFFFFFFFF);
 final Color primaryColorLight = Color(0xFF69CC67);
+final Color darkPrimaryColor = Color(0xFF000000);
+final Color darkSecondaryColor = Color(0xff64ffda);
 
 final TextTheme customTextTheme = TextTheme(
   headline1: TextStyle(
@@ -85,5 +87,59 @@ final TextTheme customTextTheme = TextTheme(
     fontSize: 10,
     fontWeight: FontWeight.w400,
     letterSpacing: 1.5,
+  ),
+);
+
+ThemeData lightTheme = ThemeData(
+  primaryColor: primaryColor,
+  accentColor: secondaryColor,
+  primaryColorLight: primaryColorLight,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  scaffoldBackgroundColor: Colors.white,
+  textTheme: customTextTheme,
+  appBarTheme: AppBarTheme(
+    textTheme: customTextTheme.apply(bodyColor: Colors.white),
+    elevation: 0,
+  ),
+  buttonTheme: ButtonThemeData(
+    buttonColor: primaryColor,
+    textTheme: ButtonTextTheme.accent,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    selectedItemColor: primaryColor,
+    selectedLabelStyle:
+        customTextTheme.caption.copyWith(fontWeight: FontWeight.w600),
+    unselectedItemColor: Colors.grey,
+    unselectedLabelStyle:
+        customTextTheme.caption.copyWith(fontWeight: FontWeight.w600),
+  ),
+);
+
+ThemeData darkTheme = ThemeData.dark().copyWith(
+  primaryColor: darkPrimaryColor,
+  accentColor: darkSecondaryColor,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  textTheme: customTextTheme,
+  appBarTheme: AppBarTheme(
+    textTheme: customTextTheme.apply(bodyColor: Colors.white),
+    elevation: 0,
+  ),
+  buttonTheme: ButtonThemeData(
+    buttonColor: darkSecondaryColor,
+    textTheme: ButtonTextTheme.accent,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    selectedItemColor: primaryColorLight,
+    selectedLabelStyle:
+        customTextTheme.caption.copyWith(fontWeight: FontWeight.w600),
+    unselectedItemColor: Colors.grey,
+    unselectedLabelStyle:
+        customTextTheme.caption.copyWith(fontWeight: FontWeight.w600),
   ),
 );

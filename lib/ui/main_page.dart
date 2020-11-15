@@ -3,11 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:simajalengka_app/data/api/api_article.dart';
-import 'package:simajalengka_app/data/provider/article_provider.dart';
-import 'package:simajalengka_app/data/provider/scheduling_provider.dart';
-import 'package:simajalengka_app/settings_page.dart';
+import 'package:simajalengka_app/ui/bookmark_page.dart';
+import 'package:simajalengka_app/ui/settings_page.dart';
 import 'package:simajalengka_app/ui/article/index.dart';
 import 'package:simajalengka_app/utils/helpers/notification_helper.dart';
 import 'package:simajalengka_app/utils/service/background_service.dart';
@@ -82,20 +79,19 @@ class _MainPageState extends State<MainPage> {
   }
 
   List<Widget> _listWidget = [
-    ChangeNotifierProvider(
-      create: (_) => ArticleProvider(apiArticle: ApiArticle()),
-      child: ArticleListPage(),
-    ),
-    ChangeNotifierProvider(
-      create: (_) => SchedulingProvider(),
-      child: SettingsPage(),
-    ),
+    ArticleListPage(),
+    BookmarkPage(),
+    SettingsPage(),
   ];
 
   List<BottomNavigationBarItem> _bottomNavbarItems = [
     BottomNavigationBarItem(
       icon: Icon(Platform.isIOS ? CupertinoIcons.news : Icons.public),
       label: "Berita",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Platform.isIOS ? CupertinoIcons.bookmark : Icons.bookmark),
+      label: "Tersimpan",
     ),
     BottomNavigationBarItem(
       icon: Icon(Platform.isIOS ? CupertinoIcons.settings : Icons.settings),

@@ -1,4 +1,4 @@
-package com.example.simajalengka_app
+package com.sundatech.simajalengka
 
 import io.flutter.embedding.android.FlutterActivity
 
